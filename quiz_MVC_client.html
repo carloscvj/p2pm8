@@ -49,6 +49,16 @@ const quizForm = (msg, event, id, question, answer) =>
     <button class="index">Go back</button>
 `;
 
+const newQuizForm = (msg, event, question, answer) =>
+`   ${msg}:
+    <p>
+        <input  type="text" id="question" value="${question}" placeholder="Question" >
+        <input  type="text" id="answer"   value="${answer}"   placeholder="Answer" >
+        <button class="${event}" question="${question}" answer="${answer}">${event}</button>
+    </p>
+    <button class="index">Go back</button>
+`;
+
    // CONTROLLERs
 
 const indexController = () => {
@@ -84,19 +94,27 @@ const updateController = (id) => {
 };
 
 const newController = () => {
-    // ..... introducir código
+    let {question, answer} = {question:"", answer:""};
+    $('#main').html(newQuizForm('New Quiz', 'create', question, answer));
 };
 
-const createController = () => {
-    // ..... introducir código
+const createController = (question, answer) => {
+    let quizzes = JSON.parse(localStorage.quizzes);
+    quizzes.push(question, answer);
+    localStorage.quizzes = JSON.stringify(quizzes);
+    indexController();
 };
 
 const deleteController = (id) => {
-    // ..... introducir código
+    let quizzes = JSON.parse(localStorage.quizzes);
+    quizzes.splice(id, 1);
+    localStorage.quizzes = JSON.stringify(quizzes);
+    indexController();
 };
 
-const resetController = (id) => {
-    // ..... introducir código
+const resetController = () => {
+    localStorage.quizzes = initial_quizzes;
+    indexController();
 };
 
 
@@ -108,6 +126,11 @@ const eventsController = ()=> {
   $(document).on('click','.check',  (e)=> checkController(Number($(e.target).attr("quizid"))));
   $(document).on('click','.edit',   (e)=> editController(Number($(e.target).attr("quizid"))));
   $(document).on('click','.update', (e)=> updateController(Number($(e.target).attr("quizid"))));
+  $(document).on('click','.new',   (e)=> newController(Number($(e.target).attr("quizid"))));
+  $(document).on('click','.create', (e)=> createController(Number($(e.target).attr("quizid"))));
+  
+  $(document).on('click','.delete', (e)=> deleteController(Number($(e.target).attr("quizid"))));
+  $(document).on('click','.reset', (e)=> resetController(Number($(e.target).attr("quizid"))));
 
     // ..... añadir manejadores de eventos new, create, delete y reset
 }
